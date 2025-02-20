@@ -1,3 +1,13 @@
+#pip install streamlit
+#pip install ollama
+#pip install edge-tts
+#pip install requests
+#pip install pillow
+#pip install moviepy
+#pip install spacy
+
+
+
 import streamlit as st
 import ollama
 
@@ -8,8 +18,9 @@ import requests
 import io
 from PIL import Image #pip install pillow
 
+#pip install moviepy==1.0.3 numpy>=1.18.1 imageio>=2.5.0 decorator>=4.3.0 tqdm>=4.0.0 Pillow>=7.0.0 scipy>=1.3.0 pydub>=0.23.0 audiofile>=0.0.0 opencv-python>=4.5
 from moviepy.editor import AudioFileClip, ImageClip
-from moviepy.editor import VideoFileClip, concatenate_videoclips
+from moviepy.editor import VideoFileClip, concatenate
 
 import spacy
 import spacy.cli
@@ -24,7 +35,7 @@ headers = {"Authorization": "Bearer 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"}
 def merge_videos(video_files, output_file):
     """Merge multiple video files into a single video file."""
     clips = [VideoFileClip(video) for video in video_files]
-    final_clip = concatenate_videoclips(clips, method="compose")
+    final_clip = concatenate(clips, method="compose")
     final_clip.write_videofile(output_file, codec="libx264")
 
 
@@ -86,7 +97,7 @@ if create_transcription or topic:
 
 if create_transcription:
     transcription = ollama.generate(
-        model='llama3.1',
+        model='llama3',
         prompt=f'You are a highly skilled storyteller with a knack for weaving intricate narratives. I would like you to write a compelling and in-depth essay about {topic}. The essay should not only explore the fundamental aspects of the topic but also delve into its historical context, significance, and any relevant anecdotes or examples that make it engaging for readers. Please ensure that the writing is rich in detail, thought-provoking, and flows seamlessly from one idea to the next. The final output should be presented as a cohesive block of text without any subtitles or breaks.But keep in mind to not use more than 5 sentences.'
     )
 
@@ -112,18 +123,18 @@ sentences = list(doc.sents)
 st.markdown(len(sentences))
 
 if st.button("Create Video") and transcription:
-        video_titles = ollama.generate(model='llama3.1',
+        video_titles = ollama.generate(model='llama3',
                                        prompt=f'Generate 10 compelling and attention-grabbing video titles for the following YouTube video transcription: {transcription}. The titles should be creative, engaging, and designed to spark curiosity among viewers. Use strong action words and phrases that evoke emotion or wonder to attract a broad audience.')
         st.subheader("Video Titles")
         st.markdown(video_titles['response'])
 
-        video_description = ollama.generate(model='llama3.1',
+        video_description = ollama.generate(model='llama3',
                                             prompt=f"Craft a captivating video description for the following YouTube video transcription: {transcription}. The description should include an engaging hook that captures viewers' attention, a brief overview of the video's main topics, and relevant keywords to improve search visibility. Additionally, incorporate a strong call to action encouraging viewers to like, subscribe, and comment on their thoughts or questions. Aim for a tone that reflects the video's content while enticing viewers to watch.")
 
         st.subheader("Video Description")
         st.markdown(video_description['response'])
 
-        keywords = ollama.generate(model='llama3.1',
+        keywords = ollama.generate(model='llama3',
                                    prompt=f'Please generate 20 highly relevant SEO keywords for optimizing a YouTube video based on the following transcription: {transcription}. Ensure that the keywords capture key themes, concepts, and phrases that viewers might search for related to the content. Focus on a mix of broad and long-tail keywords that reflect both general interest and specific topics discussed in the transcription. The goal is to enhance discoverability and engagement for the video.')
         st.subheader("Keywords")
         st.markdown(keywords['response'])
@@ -141,7 +152,7 @@ if st.button("Create Video") and transcription:
             st.markdown(TEXT.text)
 
             response = ollama.generate(
-                model='llama3.1',
+                model='llama3',
                 prompt=f"Create a detailed prompt for a text-to-image model to create ultra-realistic image based on the following paragraph: '{TEXT.text}'. The prompt should include descriptions of the scene. Output only include prompt, do not add any other explanation like: Here is the detailed prompt for a text-to-image model."
             )  # , the character's appearance, and the mood of the setting
             print(response['response'])
