@@ -35,7 +35,7 @@ nlp = spacy.load("en_core_web_sm")
 # Hugging Face API
 API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev"
 HEADERS = {
-    "Authorization": "Bearer ur_hugging_face_api",
+    "Authorization": "Bearer ur_hugging_face_token",
     "Accept": "image/png"
 }
 
